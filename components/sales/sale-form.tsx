@@ -35,15 +35,23 @@ export function SaleForm({ sale, categories }: SaleFormProps) {
       ? await updateSale(sale.id, formData)
       : await createSale(formData)
 
-    if (result.error) {
+    if (result?.error) {
       toast.error(result.error)
       setIsLoading(false)
       return
     }
 
     toast.success(sale ? 'Sale updated successfully' : 'Sale created successfully')
-    router.push('/dashboard/sales')
+
+    // 🔥 IMPORTANT FIX (REAL-TIME UPDATE)
     router.refresh()
+
+    // maliit delay para sure updated data
+    setTimeout(() => {
+      router.push('/dashboard/sales')
+    }, 100)
+
+    setIsLoading(false)
   }
 
   return (
@@ -53,37 +61,32 @@ export function SaleForm({ sale, categories }: SaleFormProps) {
           {sale ? 'Edit Sale' : 'New Sale'}
         </CardTitle>
       </CardHeader>
+
       <CardContent>
         <form action={handleSubmit} className="space-y-6">
+
           <div className="grid gap-6 md:grid-cols-2">
+
             <div className="space-y-2">
               <Label htmlFor="product_name">Product Name *</Label>
               <Input
                 id="product_name"
                 name="product_name"
                 defaultValue={sale?.product_name}
-                placeholder="Enter product name"
                 required
-                className="border-slate-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category_id">Category</Label>
+              <Label>Category</Label>
               <Select name="category_id" defaultValue={sale?.category_id || ''}>
-                <SelectTrigger className="border-slate-200">
-                  <SelectValue placeholder="Select a category" />
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="h-3 w-3 rounded-full"
-                          style={{ backgroundColor: category.color }}
-                        />
-                        {category.name}
-                      </div>
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -91,61 +94,48 @@ export function SaleForm({ sale, categories }: SaleFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="quantity">Quantity *</Label>
+              <Label>Quantity *</Label>
               <Input
-                id="quantity"
                 name="quantity"
                 type="number"
-                min="1"
                 defaultValue={sale?.quantity || 1}
                 required
-                className="border-slate-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="unit_price">Unit Price *</Label>
+              <Label>Unit Price *</Label>
               <Input
-                id="unit_price"
                 name="unit_price"
                 type="number"
                 step="0.01"
-                min="0"
                 defaultValue={sale?.unit_price}
-                placeholder="0.00"
                 required
-                className="border-slate-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="customer_name">Customer Name</Label>
+              <Label>Customer Name</Label>
               <Input
-                id="customer_name"
                 name="customer_name"
                 defaultValue={sale?.customer_name || ''}
-                placeholder="Enter customer name"
-                className="border-slate-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="customer_email">Customer Email</Label>
+              <Label>Customer Email</Label>
               <Input
-                id="customer_email"
                 name="customer_email"
                 type="email"
                 defaultValue={sale?.customer_email || ''}
-                placeholder="customer@example.com"
-                className="border-slate-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status">Status *</Label>
+              <Label>Status</Label>
               <Select name="status" defaultValue={sale?.status || 'pending'}>
-                <SelectTrigger className="border-slate-200">
-                  <SelectValue placeholder="Select status" />
+                <SelectTrigger>
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="pending">Pending</SelectItem>
@@ -157,31 +147,29 @@ export function SaleForm({ sale, categories }: SaleFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="sale_date">Sale Date *</Label>
+              <Label>Sale Date</Label>
               <Input
-                id="sale_date"
                 name="sale_date"
                 type="datetime-local"
-                defaultValue={sale?.sale_date ? new Date(sale.sale_date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16)}
-                required
-                className="border-slate-200"
+                defaultValue={
+                  sale?.sale_date
+                    ? new Date(sale.sale_date).toISOString().slice(0, 16)
+                    : new Date().toISOString().slice(0, 16)
+                }
               />
             </div>
+
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
+            <Label>Notes</Label>
             <Textarea
-              id="notes"
               name="notes"
               defaultValue={sale?.notes || ''}
-              placeholder="Add any additional notes..."
-              rows={3}
-              className="border-slate-200"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-4">
+          <div className="flex justify-end gap-4">
             <Button
               type="button"
               variant="outline"
@@ -190,17 +178,19 @@ export function SaleForm({ sale, categories }: SaleFormProps) {
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
+
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {sale ? 'Updating...' : 'Creating...'}
+                  Saving...
                 </>
               ) : (
                 sale ? 'Update Sale' : 'Create Sale'
               )}
             </Button>
           </div>
+
         </form>
       </CardContent>
     </Card>
