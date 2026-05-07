@@ -34,7 +34,7 @@ export async function signUp(formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: SITE_URL,
+      emailRedirectTo: `${SITE_URL}/auth/callback`,
       data: {
         full_name: fullName,
         role: 'user',
@@ -46,7 +46,10 @@ export async function signUp(formData: FormData) {
     return { error: error.message }
   }
 
-  return { success: true, message: 'Check your email to confirm your account.' }
+  return {
+    success: true,
+    message: 'Check your email to confirm your account.',
+  }
 }
 
 export async function signOut() {
@@ -57,13 +60,18 @@ export async function signOut() {
 
 export async function getUser() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   return user
 }
 
 export async function getProfile() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   if (!user) return null
 
