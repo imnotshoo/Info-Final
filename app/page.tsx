@@ -8,14 +8,9 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // safety check (prevents server crash)
-  if (user === undefined) {
+  if (!user) {
     redirect('/auth/login')
   }
 
-  if (user) {
-    redirect('/dashboard')
-  }
-
-  redirect('/auth/login')
+  redirect('/dashboard')
 }
