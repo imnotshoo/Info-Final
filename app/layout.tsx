@@ -1,14 +1,17 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: 'Sales Monitor - Admin Dashboard',
-  description: 'A comprehensive sales monitoring and management dashboard for tracking sales, customers, and business analytics.',
+  description:
+    'A comprehensive sales monitoring and management dashboard for tracking sales, customers, and business analytics.',
   keywords: ['sales', 'dashboard', 'monitoring', 'analytics', 'admin'],
 }
 
@@ -20,15 +23,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="en" className="bg-background">
       <body className={`${inter.variable} font-sans antialiased`}>
         {children}
         <Toaster position="top-right" richColors />
-        {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   )
