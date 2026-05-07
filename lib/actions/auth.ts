@@ -3,6 +3,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
+
 export async function signIn(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -32,7 +34,7 @@ export async function signUp(formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? `${process.env.NEXT_PUBLIC_SITE_URL || ''}/auth/callback`,
+      emailRedirectTo: `${SITE_URL}/auth/callback`,
       data: {
         full_name: fullName,
         role: 'user',
@@ -62,7 +64,7 @@ export async function getUser() {
 export async function getProfile() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
+
   if (!user) return null
 
   const { data: profile } = await supabase
