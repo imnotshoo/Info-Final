@@ -34,7 +34,7 @@ export async function signUp(formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: `${SITE_URL}/auth/callback`,
+      emailRedirectTo: SITE_URL,
       data: {
         full_name: fullName,
         role: 'user',
