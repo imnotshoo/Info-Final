@@ -12,7 +12,7 @@ export async function getSales() {
 
   const { data, error } = await supabase
     .from('sales')
-    .select('*, categories(id, name, color)')
+    .select('*')
     .order('sale_date', { ascending: false })
 
   if (error || !data) return []
@@ -30,7 +30,7 @@ export async function getSaleById(id: string) {
 
   const { data, error } = await supabase
     .from('sales')
-    .select('*, categories(id, name, color)')
+    .select('*')
     .eq('id', id)
     .maybeSingle()
 

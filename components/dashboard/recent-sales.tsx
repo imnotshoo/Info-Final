@@ -56,7 +56,7 @@ export function RecentSales({ sales }: RecentSalesProps) {
                     {sale.status}
                   </Badge>
                   <span className="font-semibold text-slate-900 whitespace-nowrap">
-                    ${sale.total_amount.toLocaleString()}
+                    ${(Number(sale.total_amount || 0)).toLocaleString()}
                   </span>
                 </div>
               </div>
